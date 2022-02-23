@@ -1,10 +1,10 @@
 const router = require('express').Router();
 
-const signInController = require('../controller/signIn.controller');
-
+const { signInController } = require('../controller');
+const { signInMiddleware } = require('../middleware')
 
 router.get('/', signInController.getFormSignIn);
-router.post('/', signInController.signIn);
+router.post('/',signInMiddleware.checkUserAuth, signInController.signIn);
 
 
 module.exports = router;

@@ -17,8 +17,34 @@ module.exports = {
             res.redirect(`/error?error=${message}`)
         }
     },
-    isUserDataValid: (req, res, next) => {
+    isUserDataValid: ({body}, res, next) => {
         try {
+
+            if (!body.name.length < 2 || body.surname.length < 2) {
+                throw new Error ('firstName or lastName must include more than 2 symbols')
+            }
+            if (!body.email.includes('(@)')){
+                throw new Error ('Your email is not valid')
+            }
+            if (body.password.length < 6){
+                throw new Error ('Your password is not valid')
+            }
+            if (body.age < 18){
+                throw new Error ('Your age is not valid')
+            }
+            if (!body.city){
+                throw new Error ('Enter your city')
+            }
+                next();
+        }catch ({message}) {
+            res.redirect(`/error?error=${message}`)
+        }
+    },
+    isUserExist: ({body}, res, next) => {
+        try {
+            const userExist = users.some(user => user.email === req.body.email);
+            if (userExist) throw new Error('User with this email exist')
+
 
             next();
         }catch ({message}) {
